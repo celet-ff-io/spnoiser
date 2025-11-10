@@ -167,18 +167,20 @@ class RemainingTime(ScreenElement):
     @classmethod
     def __format_time(cls, seconds: int) -> str:
         """Format seconds into a human-readable string."""
-        if seconds > cls.SECONDS_DAY:
-            days = seconds // cls.SECONDS_DAY
-            rest = seconds % cls.SECONDS_DAY
-            hh = rest // cls.SECONDS_HOUR
-            mm = (rest % cls.SECONDS_HOUR) // cls.SECONDS_MINUTE
-            return f"{days} days and {hh:02d}:{mm:02d}"
-        elif seconds > 60:
-            hh = seconds // cls.SECONDS_HOUR
-            mm = (seconds % cls.SECONDS_HOUR) // cls.SECONDS_MINUTE
-            return f"{hh:02d}:{mm:02d}"
-        else:
+        if seconds < cls.SECONDS_MINUTE:
             return f"{seconds}s"
+        else:
+            ss = seconds % cls.SECONDS_MINUTE
+            if seconds < cls.SECONDS_DAY:
+                hh = seconds // cls.SECONDS_HOUR
+                mm = (seconds % cls.SECONDS_HOUR) // cls.SECONDS_MINUTE
+                return f"{hh:02d}:{mm:02d}:{ss:02d}"
+            else:
+                days = seconds // cls.SECONDS_DAY
+                rest = seconds % cls.SECONDS_DAY
+                hh = rest // cls.SECONDS_HOUR
+                mm = (rest % cls.SECONDS_HOUR) // cls.SECONDS_MINUTE
+                return f"{days} days and {hh:02d}:{mm:02d}:{ss:02d}"
 
 
 class ExitHint(ScreenElement):
