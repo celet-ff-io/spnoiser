@@ -30,6 +30,7 @@ The program (via `spnoiser.app:main`) supports the following options:
 - `-n, --noise`  : Text to repeat on the terminal.
 - `-t, --time`   : Maximum annoying time in seconds.
 - `-s, --sound`  : Path to an audio file to loop. If omitted, the terminal beep is used when available.
+- `-v, --volume` : Volume level for the sound file (>= 0.0). Default is 1.0.
 
 Examples:
 

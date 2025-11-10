@@ -46,6 +46,7 @@ class App:
     _noise_text: str
     _max_time: int
     _sound_file_path: str | None
+    _volume: float
 
     _start_time: float
     _beep_enabled: bool
@@ -57,11 +58,14 @@ class App:
         noise_text: str,
         max_time: int,
         sound_file_path: str | None,
+        volume: float,
     ) -> None:
         self._stdscr = stdscr
         self._noise_text = noise_text
         self._max_time = max_time
         self._sound_file_path = sound_file_path
+        self._volume = volume
+
         self._beep_enabled = sound_file_path is None
 
         curses.curs_set(0)
@@ -87,6 +91,10 @@ class App:
     @property
     def sound_file_path(self) -> str | None:
         return self._sound_file_path
+
+    @property
+    def volume(self) -> float:
+        return self._volume
 
     @property
     def beep_enabled(self) -> bool:
@@ -122,6 +130,7 @@ class App:
             try:
                 while True:
                     data, samplerate = sf.read(self.sound_file_path, dtype="float32")
+                    data *= self._volume
                     sd.play(data, samplerate=samplerate)
                     sd.wait()
             except Exception as err:
@@ -194,9 +203,10 @@ class App:
         noise_text: str,
         max_time: int,
         sound_file_path: str | None,
+        volume: float,
     ) -> None:
         """Create and run the application."""
-        app = cls(stdscr, noise_text, max_time, sound_file_path)
+        app = cls(stdscr, noise_text, max_time, sound_file_path, volume)
         app.mainloop()
 
 
@@ -221,13 +231,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "-s",
         "--sound",
+        type=str,
         default=None,
         help="Path to the audio file to loop (WAV recommended). If not specified, the system beep sound will be used.",
+    )
+    parser.add_argument(
+        "-v",
+        "--volume",
+        type=float,
+        default=1.0,
+        help="Volume for the audio file playback (default: 1.0)",
     )
     args = parser.parse_args(argv)
 
     try:
-        curses.wrapper(App.create_and_run, args.noise, args.time, args.sound)
+        curses.wrapper(
+            App.create_and_run, args.noise, args.time, args.sound, args.volume
+        )
     except KeyboardInterrupt:
         return 0
     except Exception as err:
