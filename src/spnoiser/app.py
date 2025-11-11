@@ -242,18 +242,21 @@ def main(argv: list[str] | None = None) -> int:
         default=1.0,
         help="Volume for the audio file playback (default: 1.0)",
     )
-    args = parser.parse_args(argv)
+    try:
+        args = parser.parse_args(argv)
+    except SystemExit as err:
+        print(f"Error in arguments: {err}")
+        return 2
 
     try:
         curses.wrapper(
             App.create_and_run, args.noise, args.time, args.sound, args.volume
         )
+        return 0
     except KeyboardInterrupt:
         return 0
     except Exception as err:
         print(f"Error:\n{type(err).__name__}: {err}")
-        return 2
-    else:
         return 1
 
 

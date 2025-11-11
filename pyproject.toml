@@ -14,7 +14,7 @@
 
 [project]
 name = "spnoiser"
-version = "1.1.1"
+version = "1.1.2"
 description = "Simple noiser: Run to annoy the user."
 readme = "README.md"
 requires-python = ">=3.13"
